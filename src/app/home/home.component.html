@@ -1,0 +1,24 @@
+<div class="container">
+  <nav class="side-menu">
+    <ul>
+      <!-- Menu for candidat -->
+      <ng-container *ngIf="isCandidat(); else otherMenu">
+        <li><a routerLink="/candidature/history">Historique des candidatures</a></li>
+        <li><a routerLink="/etablissements">Etablissements</a></li>
+        <li><a routerLink="/offres">Offres</a></li>
+        <li><a routerLink="/notification/list">Notifications</a></li>
+      </ng-container>
+      <!-- Menu for other roles -->
+      <ng-template #otherMenu>
+  <li><a routerLink="/candidature/list">Candidatures</a></li>
+  <li><a routerLink="/etablissements">Etablissements</a></li>
+  <li><a routerLink="/offres/new">Créer offre</a></li>
+  <li><a routerLink="/offres">Offres</a></li>
+        <li><a routerLink="/notification/list">Notifications</a></li>
+      </ng-template>
+    </ul>
+  </nav>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

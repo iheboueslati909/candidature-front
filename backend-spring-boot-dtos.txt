@@ -1,0 +1,55 @@
+public record CandidatureRequest(
+        Long userId,
+        String studentName,
+        Double moyenne,
+        LocalDate dateDebutMobilite,
+        Long offreId
+) {}
+public record CandidatureResponse(
+        Long id,
+        Long userId,
+        String studentName,
+        Double moyenne,
+        LocalDate dateDebutMobilite,
+        String status,
+        Long offreId,
+        LocalDateTime createdAt
+) {}
+public record EtablissementRequest(
+        String nom,
+        String pays
+) {}
+public record EtablissementResponse(
+        Long id,
+        String nom,
+        String pays,
+        Double averageRating
+) {}
+public record OffreRequest(
+        String titre,
+        String description,
+        LocalDate dateDebut,
+        LocalDate dateFin,
+        Long etablissementId
+) {}
+public record OffreResponse(
+        Long id,
+        String titre,
+        String description,
+        LocalDate dateDebut,
+        LocalDate dateFin,
+        boolean active,
+        Long etablissementId
+) {}
+public record RatingRequest(
+        Long userId,
+        Long etablissementId,
+        int score
+) {}
+public record RatingResponse(
+        Long id,
+        Long userId,
+        Long etablissementId,
+        int score,
+        LocalDateTime createdAt
+) {}
