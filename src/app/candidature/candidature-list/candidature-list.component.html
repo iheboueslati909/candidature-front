@@ -1,0 +1,89 @@
+<mat-card>
+  <mat-card-title>Liste des candidatures</mat-card-title>
+
+  <div class="controls">
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par statut</mat-label>
+      <mat-select [ngModel]="filter()" (ngModelChange)="filter.set($event); reload()">
+        <mat-option value="">Tous</mat-option>
+        <mat-option value="PENDING">En attente</mat-option>
+        <mat-option value="ACCEPTED">Accepté</mat-option>
+        <mat-option value="REFUSED">Refusé</mat-option>
+        <mat-option value="WAITING_LIST">Liste d’attente</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="sort()">
+      <mat-icon>sort</mat-icon>
+      Trier par moyenne {{ desc() ? '(desc)' : '(asc)' }}
+    </button>
+  </div>
+
+  <table mat-table [dataSource]="items()" class="mat-elevation-z2 full-width">
+
+    <!-- Student -->
+    <ng-container matColumnDef="student">
+      <th mat-header-cell *matHeaderCellDef> Étudiant </th>
+      <td mat-cell *matCellDef="let c"> {{ c.studentName }} </td>
+    </ng-container>
+
+    <!-- Etablissement -->
+    <ng-container matColumnDef="etablissement">
+      <th mat-header-cell *matHeaderCellDef> Établissement </th>
+      <td mat-cell *matCellDef="let c"> {{ c.etablissementNom }} </td>
+    </ng-container>
+
+    <!-- Offre -->
+    <ng-container matColumnDef="offre">
+      <th mat-header-cell *matHeaderCellDef> Offre </th>
+      <td mat-cell *matCellDef="let c"> {{ c.offreTitre }} </td>
+    </ng-container>
+
+    <!-- Moyenne -->
+    <ng-container matColumnDef="moyenne">
+      <th mat-header-cell *matHeaderCellDef> Moyenne </th>
+      <td mat-cell *matCellDef="let c"> {{ c.moyenne }} </td>
+    </ng-container>
+
+    <!-- Date -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef> Date </th>
+      <td mat-cell *matCellDef="let c"> {{ c.dateDebutMobilite | date }} </td>
+    </ng-container>
+
+    <!-- Status -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Statut </th>
+      <td mat-cell *matCellDef="let c">
+        <span [ngClass]="c.status.toLowerCase()">
+          {{ c.status === 'PENDING' ? 'En attente' :
+             c.status === 'ACCEPTED' ? 'Accepté' :
+             c.status === 'REFUSED' ? 'Refusé' :
+             'Liste d’attente' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let c">
+        <button mat-icon-button color="primary" (click)="accept(c)" matTooltip="Accepter">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="refuse(c)" matTooltip="Refuser">
+          <mat-icon>close</mat-icon>
+        </button>
+        <button mat-icon-button (click)="hold(c)" matTooltip="Liste d’attente">
+          <mat-icon>schedule</mat-icon>
+        </button>
+        <button mat-icon-button (click)="del(c.id)" matTooltip="Supprimer">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</mat-card>

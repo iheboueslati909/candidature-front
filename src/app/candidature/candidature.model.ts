@@ -15,6 +15,7 @@ export interface CandidatureResponse {
   dateDebutMobilite: string;
   status: 'PENDING' | 'ACCEPTED' | 'REFUSED';
   offreId?: number;
-  etablissementName?: string;
+  etablissementNom?: string;
+  offreTitre?:string;
   createdAt: string; // ISO datetime
 }

@@ -4,37 +4,56 @@ import { FormsModule } from '@angular/forms';
 import { OffreService } from './offre.service';
 import { EtablissementService } from '../etablissement/etablissement.service';
 import { AuthService } from '../auth/auth.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-create-offre',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule],
   template: `
-    <h3>Créer une offre</h3>
-    <form (ngSubmit)="submit()">
-      <label>Titre
-        <input name="titre" [(ngModel)]="titre" required />
-      </label>
-      <label>Description
-        <textarea name="description" [(ngModel)]="description"></textarea>
-      </label>
-      <label>Date début
-        <input type="date" name="dateDebut" [(ngModel)]="dateDebut" required />
-      </label>
-      <label>Date fin
-        <input type="date" name="dateFin" [(ngModel)]="dateFin" required />
-      </label>
-      <label>Etablissement
-        <select name="etablissementId" [(ngModel)]="etablissementId" required>
-          <option [ngValue]="null">-- Choisir --</option>
-          <option *ngFor="let e of etablissements" [ngValue]="e.id">{{e.nom}} ({{e.pays}})</option>
-        </select>
-      </label>
-      <div style="margin-top:8px">
-        <button type="submit">Créer</button>
-      </div>
-      <p *ngIf="message">{{message}}</p>
-    </form>
+    <mat-card >
+      <mat-card-title>Créer une offre</mat-card-title>
+      <form (ngSubmit)="submit()" style="display:flex; flex-direction:column; gap:12px; margin-top:12px;margin-right:12px;margin-left:12px;margin-bottom:12px;">
+        <mat-form-field appearance="fill">
+          <mat-label>Titre</mat-label>
+          <input matInput name="titre" [(ngModel)]="titre" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <textarea matInput name="description" [(ngModel)]="description"></textarea>
+        </mat-form-field>
+
+        <div style="display:flex; gap:8px">
+          <mat-form-field appearance="fill" style="flex:1">
+            <mat-label>Date début</mat-label>
+            <input matInput type="date" name="dateDebut" [(ngModel)]="dateDebut" required />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="flex:1">
+            <mat-label>Date fin</mat-label>
+            <input matInput type="date" name="dateFin" [(ngModel)]="dateFin" required />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Etablissement</mat-label>
+          <mat-select name="etablissementId" [(ngModel)]="etablissementId" required>
+            <mat-option [value]="null">-- Choisir --</mat-option>
+            <mat-option *ngFor="let e of etablissements" [value]="e.id">{{e.nom}} ({{e.pays}})</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div style="display:flex; gap:8px; margin-top:8px">
+          <button mat-flat-button color="primary" type="submit">Créer</button>
+        </div>
+
+        <p *ngIf="message">{{message}}</p>
+      </form>
+    </mat-card>
   `
 })
 export class CreateOffreComponent {

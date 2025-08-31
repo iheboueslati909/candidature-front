@@ -1,0 +1,27 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.accepted {
+  color: green;
+  font-weight: bold;
+}
+
+.pending {
+  color: orange;
+}
+
+.refused {
+  color: red;
+}
+
+.waiting_list {
+  color: blue;
+}

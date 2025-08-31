@@ -1,24 +1,35 @@
-<div class="container">
-  <nav class="side-menu">
-    <ul>
-      <!-- Menu for candidat -->
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
       <ng-container *ngIf="isCandidat(); else otherMenu">
-        <li><a routerLink="/candidature/history">Historique des candidatures</a></li>
-        <li><a routerLink="/etablissements">Etablissements</a></li>
-        <li><a routerLink="/offres">Offres</a></li>
-        <li><a routerLink="/notification/list">Notifications</a></li>
+        <a mat-list-item routerLink="/candidature/history"><mat-icon>history</mat-icon><span>Historique des candidatures</span></a>
+        <a mat-list-item routerLink="/etablissements"><mat-icon>school</mat-icon><span>Etablissements</span></a>
+        <a mat-list-item routerLink="/offres"><mat-icon>work</mat-icon><span>Offres</span></a>
+        <a mat-list-item routerLink="/notification/list"><mat-icon>notifications</mat-icon><span>Notifications</span></a>
       </ng-container>
-      <!-- Menu for other roles -->
       <ng-template #otherMenu>
-  <li><a routerLink="/candidature/list">Candidatures</a></li>
-  <li><a routerLink="/etablissements">Etablissements</a></li>
-  <li><a routerLink="/offres/new">Créer offre</a></li>
-  <li><a routerLink="/offres">Offres</a></li>
-        <li><a routerLink="/notification/list">Notifications</a></li>
+        <a mat-list-item routerLink="/candidature/list"><mat-icon>assignment</mat-icon><span>Candidatures</span></a>
+        <a mat-list-item routerLink="/etablissements"><mat-icon>school</mat-icon><span>Etablissements</span></a>
+        <a mat-list-item routerLink="/offres/new"><mat-icon>add</mat-icon><span>Créer offre</span></a>
+        <a mat-list-item routerLink="/offres"><mat-icon>work</mat-icon><span>Offres</span></a>
+        <a mat-list-item routerLink="/notification/list"><mat-icon>notifications</mat-icon><span>Notifications</span></a>
       </ng-template>
-    </ul>
-  </nav>
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="topbar">
+      <button mat-icon-button aria-label="Toggle sidenav" disabled>
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="title">Candidature</span>
+      <span class="spacer"></span>
+      <button mat-icon-button aria-label="Account"><mat-icon>account_circle</mat-icon></button>
+    </mat-toolbar>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

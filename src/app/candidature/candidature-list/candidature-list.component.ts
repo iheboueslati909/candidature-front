@@ -1,69 +1,54 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { CandidatureService } from '../candidature.service';
 import { CandidatureResponse } from '../candidature.model';
 
 @Component({
   selector: 'app-candidature-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
-    <h3>Liste des candidatures</h3>
-
-    <div>
-      Filtrer: 
-      <select [ngModel]="filter()" (ngModelChange)="filter.set($event); reload()">
-        <option value="">Tous</option>
-        <option value="PENDING">En attente</option>
-        <option value="ACCEPTED">Accepté</option>
-        <option value="REFUSED">Refusé</option>
-      </select>
-
-      <button (click)="sort()">
-        Trier par moyenne {{ desc() ? '(desc)' : '(asc)' }}
-      </button>
-    </div>
-
-    <ul>
-      @for (c of items(); track c.id) {
-        <li>
-          <strong>{{ c.studentName }}</strong> — 
-          {{ c.moyenne }} — 
-          {{ c.dateDebutMobilite | date }} — 
-          {{ c.etablissementName }} — 
-          <em>{{ c.status }}</em>
-
-          <button (click)="accept(c)">Accept</button>
-          <button (click)="refuse(c)">Refuse</button>
-          <button (click)="hold(c)">Hold</button>
-          <button (click)="del(c.id)">Delete</button>
-        </li>
-      }
-    </ul>
-  `
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatTableModule
+  ],
+  templateUrl: './candidature-list.component.html',
+  styleUrls: ['./candidature-list.component.css']
 })
 export class CandidatureListComponent {
   items = signal<CandidatureResponse[]>([]);
   filter = signal<string>('');
   desc = signal<boolean>(true);
 
+  displayedColumns = ['student', 'etablissement', 'offre', 'moyenne', 'date', 'status', 'actions'];
+
   constructor(private svc: CandidatureService) {
     this.reload();
   }
 
   async accept(c: CandidatureResponse) {
-  await this.svc.updateStatus(c.id, 'ACCEPTED');
+    await this.svc.updateStatus(c.id, 'ACCEPTED');
     await this.reload();
   }
 
   async refuse(c: CandidatureResponse) {
-  await this.svc.updateStatus(c.id, 'REFUSED');
+    await this.svc.updateStatus(c.id, 'REFUSED');
     await this.reload();
   }
 
   async hold(c: CandidatureResponse) {
-  await this.svc.updateStatus(c.id, 'WAITING_LIST');
+    await this.svc.updateStatus(c.id, 'WAITING_LIST');
     await this.reload();
   }
 
