@@ -1,24 +1,50 @@
 .sidenav-container {
   height: 100vh;
 }
+
 .sidenav {
   width: 240px;
 }
+
 .topbar {
   position: sticky;
   top: 0;
   z-index: 2;
+  display: flex;
+  align-items: center; /* centers menu icon, title, account icon */
 }
+
 .content {
   padding: 24px;
 }
+
 .title {
   font-size: 20px;
   font-weight: 600;
+  margin-left: 12px; /* spacing between menu icon and title */
 }
+
 .spacer {
   flex: 1 1 auto;
 }
+
+/* 🔥 Align side menu icons + text */
+mat-nav-list a.mat-list-item .mat-list-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* spacing between icon and text */
+}
+
 mat-nav-list a.mat-list-item mat-icon {
-  margin-right: 12px;
+  font-size: 22px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0; /* prevents squishing */
+}
+
+/* Optional: highlight active link */
+a.mat-list-item.active,
+a.mat-list-item.active .mat-list-item-content {
+  background-color: rgba(0,0,0,0.08);
+  font-weight: 600;
 }

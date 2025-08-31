@@ -16,7 +16,7 @@ import { RatingDialogComponent } from './rating-dialog.component';
 @Component({
   selector: 'app-liste-etablissements',
   standalone: true,
-  imports: [CommonModule, MatListModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCardModule, MatDialogModule, MailSendComponent],
+  imports: [CommonModule, MatListModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCardModule, MatDialogModule],
   template: `
     <h3>Liste des établissements</h3>
     <mat-card>
