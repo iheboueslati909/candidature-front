@@ -3,9 +3,15 @@
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
       <ng-container *ngFor="let item of menuItems">
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="active" *ngIf="canView(item)">
+        <a mat-list-item *ngIf="canView(item) && item.route !== '/notification/list'" [routerLink]="item.route" routerLinkActive="active">
           <mat-icon>{{ item.icon }}</mat-icon>
           <span>{{ item.label }}</span>
+        </a>
+        <!-- Notifications opens a dialog instead of routing -->
+        <a mat-list-item *ngIf="canView(item) && item.route === '/notification/list'" (click)="openNotifications()">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+          <mat-icon *ngIf="hasNotifications" color="warn" class="notification-dot">fiber_manual_record</mat-icon>
         </a>
       </ng-container>
     </mat-nav-list>
@@ -26,6 +32,11 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+  <!-- reference NotificationListComponent so standalone import is recognized by the compiler -->
+  <ng-container *ngIf="false">
+    <app-notification-list></app-notification-list>
+  </ng-container>
 
 <ng-template #fullContent>
   <!-- No sidenav/toolbar on login/register -->

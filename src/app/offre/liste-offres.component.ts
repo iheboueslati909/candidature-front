@@ -33,7 +33,7 @@ import { AuthUserService } from '../DTO/auth-user.service';
           <td mat-cell *matCellDef="let o"> <mat-checkbox [checked]="isFavorite(o.id)" (change)="toggleFavorite(o.id, $event.checked)"></mat-checkbox> </td>
         </ng-container>
 
-        <ng-container matColumnDef="apply" *ngIf="isCandidat()">
+        <ng-container matColumnDef="apply">
           <th mat-header-cell *matHeaderCellDef> Postuler </th>
           <td mat-cell *matCellDef="let o"> <button mat-button (click)="openApply(o)">Postuler</button> </td>
         </ng-container>
@@ -53,15 +53,17 @@ import { AuthUserService } from '../DTO/auth-user.service';
           <td mat-cell *matCellDef="let o"> {{o.dateDebut | date}} — {{o.dateFin | date}} </td>
         </ng-container>
 
+                <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let o"> <button mat-button (click)="openSendEmail(o.id)">Envoyer</button> </td>
+        </ng-container>
+
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef> Status </th>
           <td mat-cell *matCellDef="let o"> {{o.active ? 'active' : 'inactive'}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="email" *ngIf="!isCandidat()">
-          <th mat-header-cell *matHeaderCellDef> Email </th>
-          <td mat-cell *matCellDef="let o"> <button mat-button (click)="openSendEmail(o.id)">Envoyer</button> </td>
-        </ng-container>
+
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -111,12 +113,14 @@ export class ListeOffresComponent {
     isCandidat(): boolean {
     return this.roles.includes('STUDENT');
   }
+    isSuperAdmin(): boolean {
+    return this.roles.includes('SUPER_ADMIN');
+  }
 
   get displayedColumns() {
     const cols: string[] = [];
-    if (this.isCandidat()) { cols.push('fav', 'apply'); }
-    cols.push('titre', 'description', 'periode', 'status');
-    if (!this.isCandidat()) cols.push('email');
+    cols.push('titre', 'description', 'periode', 'status','fav', 'apply');
+    if (this.isSuperAdmin()) cols.push('email');
     return cols;
   }
 

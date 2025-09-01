@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { Inject } from '@angular/core';
 import { CandidatureService } from '../candidature/candidature.service';
 import { AuthUserService } from '../DTO/auth-user.service';
 import { ProfileEtudiantService } from '../profile/profile-etudiant.service';
@@ -44,7 +43,7 @@ import { ProfileEtudiantService } from '../profile/profile-etudiant.service';
 })
 export class ApplyDialogComponent {
   studentName = '';
-  moyenne = 10;
+  moyenne = 0;
   dateDebut = '';
   loading = false;
   success: string | null = null;
@@ -54,14 +53,18 @@ export class ApplyDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private candidatureSvc: CandidatureService,
     private auth: AuthUserService,
-    private profileSvc: ProfileEtudiantService
+    private profileSvc: ProfileEtudiantService,
+    private zone: NgZone
   ) {
     const offer = data?.offer;
     if (offer) this.dateDebut = offer.dateDebut?.slice(0,10) ?? new Date().toISOString().slice(0,10);
+
     const userId = this.auth.getUserId();
     if (userId) {
-      this.profileSvc.getByUserId(userId).then(p => { if (p?.moyenne != null) this.moyenne = p.moyenne; });
       this.studentName = this.auth.getFullName() ?? '';
+      this.profileSvc.getByUserId(userId).then(p => {
+        p?.moyenne != null && this.zone.run(() => { this.moyenne = p.moyenne; });
+      });
     }
   }
 
@@ -72,10 +75,21 @@ export class ApplyDialogComponent {
     const userId = this.auth.getUserId();
     if (!offerId || !userId) { alert('Veuillez vous connecter.'); return; }
     this.loading = true;
+
     try {
-      await this.candidatureSvc.create({ userId, studentName: this.studentName, moyenne: this.moyenne, dateDebutMobilite: this.dateDebut, offreId: offerId });
-      this.success = 'Candidature créée';
-      setTimeout(() => this.dialogRef.close(true), 800);
+      await this.candidatureSvc.create({ 
+        userId, 
+        studentName: this.studentName, 
+        moyenne: this.moyenne, 
+        dateDebutMobilite: this.dateDebut, 
+        offreId: offerId 
+      });
+
+      this.zone.run(() => {
+        this.success = 'Candidature créée';
+        setTimeout(() => this.dialogRef.close(true), 800);
+      });
+      
     } catch (err) {
       alert('Erreur lors de la création de la candidature');
       this.dialogRef.close(false);

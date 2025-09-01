@@ -48,3 +48,9 @@ a.mat-list-item.active .mat-list-item-content {
   background-color: rgba(0,0,0,0.08);
   font-weight: 600;
 }
+
+.notification-dot {
+  font-size: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}

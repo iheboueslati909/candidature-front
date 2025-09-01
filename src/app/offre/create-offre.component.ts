@@ -95,7 +95,8 @@ export class CreateOffreComponent {
         description: this.description,
         dateDebut: this.dateDebut,
         dateFin: this.dateFin,
-        etablissementId: this.etablissementId
+        etablissementId: this.etablissementId,
+        createdBy: this.auth.getUserId() || ""
       });
 
     this.offreForm?.resetForm();

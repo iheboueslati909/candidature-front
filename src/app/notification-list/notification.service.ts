@@ -1,19 +1,35 @@
-import { Injectable } from '@angular/core';
-import { CandidatureService } from '../candidature/candidature.service';
+import { Injectable, NgZone } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private notifications: any[] = [];
-  constructor(private cand: CandidatureService) {
-    this.cand.onNew(c => this.handleNew(c));
+  private _notifications = new BehaviorSubject<any[]>([]);
+  notifications$ = this._notifications.asObservable();
+
+  constructor(private zone: NgZone) {}
+
+  connect(userId: string) {
+    const eventSource = new EventSource(`http://localhost:8080/api/notifications/stream/${userId}`);
+
+    eventSource.addEventListener('notification', (event: MessageEvent) => {
+      this.zone.run(() => {
+        console.log("Received notification event:", event.data);
+        const current = this._notifications.value;
+        this._notifications.next([{ message: event.data, createdAt: new Date() }, ...current]);
+      });
+    });
+
+    eventSource.onerror = (error) => {
+      console.error("Notification SSE error", error);
+      eventSource.close();
+    };
   }
-  list() { return this.notifications.slice().reverse(); }
-  private handleNew(c: any) {
-    const msg = `Nouvelle candidature: ${c.studentName} pour ${c.etablissementName || 'offre'}`;
-    this.notifications.push({ createdAt: new Date().toISOString(), message: msg, candidature: c });
-    if ("Notification" in window && Notification.permission === 'granted') {
-      new Notification('Nouvelle candidature', { body: msg });
-    }
+
+  list(): any[] {
+    return this._notifications.value;
   }
-  async requestPermission() { if ("Notification" in window) await Notification.requestPermission(); }
+
+  hasUnread(): boolean {
+    return this._notifications.value.length > 0;
+  }
 }
