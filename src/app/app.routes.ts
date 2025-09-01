@@ -8,8 +8,11 @@ import { CandidatureFormComponent } from './candidature/candidature-form.compone
 import { RatingFormComponent } from './rating/rating-form/rating-form.component';
 import { FavoriteListComponent } from './favorite/favorite-list/favorite-list.component';
 import { ListeEtablissementsComponent } from './etablissement/liste-etablissements.component';
+import { CreateEtablissementComponent } from './etablissement/create-etablissement.component';
 import { ListeOffresComponent } from './offre/liste-offres.component';
 import { CreateOffreComponent } from './offre/create-offre.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
   {
@@ -24,9 +27,13 @@ export const routes: Routes = [
       { path: 'rating/form', component: RatingFormComponent },
       { path: 'favorite/list', component: FavoriteListComponent },
   { path: 'etablissements', component: ListeEtablissementsComponent },
+ 
   { path: 'offres/new', component: CreateOffreComponent },
+  { path: 'etablissements/new', component: CreateEtablissementComponent },
   { path: 'offres', component: ListeOffresComponent },
       { path: '', redirectTo: 'candidature/list', pathMatch: 'full' }
     ]
-  }
+  },
+  { path: 'login', component: LoginComponent }, // standalone
+  { path: 'register', component: RegisterComponent }, // standalone
 ];

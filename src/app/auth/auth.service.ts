@@ -5,7 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 export interface JwtPayload {
   sub?: string;
   role?: string;
-  userId?: number;
+  userId?: string;
   [key: string]: any;
 }
 
@@ -61,11 +61,11 @@ export class AuthService {
   }
 
   /** Extract userId (custom claim or fallback to sub) */
-  getUserId(): number | null {
+  getUserId(): string | null {
     const p = this.decodePayload();
     if (!p) return null;
 
-    return (p.userId as number) ?? 0;
+    return p.userId ?? null;
   }
 
   /** Extract role (custom claim) */
@@ -73,18 +73,16 @@ export class AuthService {
     const p = this.decodePayload();
     return p?.role ?? null;
   }
+  getRoles(): [string] | null {
+    const p = this.decodePayload();
+    if (!p) return null;
+    return p['roles'] ?? null;
+  }
 
   /** Try to synthesize a full name from common JWT claims */
   getFullName(): string | null {
     const p = this.decodePayload();
-    if (!p) return null;
-    // common claim names
-  const name = p['name'] ?? p['fullName'] ?? null;
-  if (typeof name === 'string' && name.trim()) return name.trim();
-  const first = p['firstName'] ?? p['given_name'] ?? p['firstname'] ?? p['givenName'] ?? null;
-  const last = p['lastName'] ?? p['family_name'] ?? p['lastname'] ?? p['familyName'] ?? null;
-    if (first || last) return `${(first || '').toString().trim()} ${(last || '').toString().trim()}`.trim();
-    return null;
+    return p ? p['fullName'] ?? null : null;
   }
 
   /** Token expiry check */

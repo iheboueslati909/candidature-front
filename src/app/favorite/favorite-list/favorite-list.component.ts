@@ -37,7 +37,7 @@ export class FavoriteListComponent {
   title = '';
   favs: any[] = [];
   constructor(private svc: FavoriteService){ this.load(); }
-  async load(){ this.favs = await this.svc.listForUser(0) as any[]; }
+  async load(){ this.favs = await this.svc.listForUser("") as any[]; }
   async add(e: Event){ e.preventDefault(); const item = { title: this.title, userId: 0 }; await this.svc.add(item); await this.load(); this.title=''; }
   remove(t: string){ this.favs = this.favs.filter(f=>f.title!==t); }
 }

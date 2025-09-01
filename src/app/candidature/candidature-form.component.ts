@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CandidatureService } from './candidature.service';
-import { AuthService } from '../auth/auth.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthUserService } from '../DTO/auth-user.service';
 
 @Component({
   selector: 'app-candidature-form',
@@ -51,7 +51,7 @@ export class CandidatureFormComponent {
   dateDebut = '';
   etab = '';
   created = false;
-  constructor(private svc: CandidatureService, private auth: AuthService) {}
+  constructor(private svc: CandidatureService, private auth: AuthUserService) {}
   async create(e: Event){
     e.preventDefault();
     const userId = this.auth.getUserId() ?? undefined;

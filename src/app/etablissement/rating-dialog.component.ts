@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RatingService } from '../rating/rating.service';
-import { AuthService } from '../auth/auth.service';
 import { EtablissementResponse } from './etablissement.service';
+import { AuthUserService } from '../DTO/auth-user.service';
 
 @Component({
   selector: 'app-rating-dialog',
@@ -32,7 +32,7 @@ export class RatingDialogComponent {
   dialogRef = inject(MatDialogRef<RatingDialogComponent>);
   data = inject(MAT_DIALOG_DATA) as EtablissementResponse;
   ratingSvc = inject(RatingService);
-  auth = inject(AuthService);
+  auth = inject(AuthUserService);
 
   scoreControl = new FormControl(5);
 

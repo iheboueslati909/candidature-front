@@ -1,5 +1,5 @@
 export interface CandidatureRequest {
-  userId?: number;
+  userId?: string;
   studentName: string;
   moyenne: number;
   dateDebutMobilite: string; // ISO date

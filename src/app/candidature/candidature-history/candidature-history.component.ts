@@ -1,35 +1,28 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CandidatureService } from '../candidature.service';
-import { AuthService } from '../../auth/auth.service';
+import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
+import { CandidatureService } from '../candidature.service';
+import { AuthUserService } from '../../DTO/auth-user.service';
 
 @Component({
   selector: 'app-candidature-history',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule],
-  template: `
-    <mat-card>
-      <mat-card-title>Historique des candidatures</mat-card-title>
-      <mat-list>
-        <mat-list-item *ngFor="let c of items()">
-          <div mat-line>{{ c.createdAt | date:'short' }} — {{ c.studentName }} — {{ c.moyenne }}</div>
-          <div mat-line><strong>{{ c.status }}</strong></div>
-        </mat-list-item>
-      </mat-list>
-    </mat-card>
-  `
+  imports: [CommonModule, MatCardModule, MatTableModule],
+  templateUrl: './candidature-history.component.html',
+  styleUrls: ['./candidature-history.component.css']
 })
 export class CandidatureHistoryComponent {
   items = signal<any[]>([]);
+  displayedColumns: string[] = ['createdAt', 'studentName', 'moyenne', 'status'];
 
-  constructor(private svc: CandidatureService, private auth: AuthService) {
+  constructor(private svc: CandidatureService, private auth: AuthUserService) {
     this.load();
   }
 
   async load() {
     const userId = this.auth.getUserId();
+    console.log("CandidatureHistoryComponent load for userId=", userId);
 
     const all = userId ? await this.svc.listByUser(userId) : [];
     const sorted = all.sort(

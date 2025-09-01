@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-title>Créer un établissement</mat-card-title>
+  <form #etabForm="ngForm" (ngSubmit)="create()">
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>Nom</mat-label>
+      <input matInput [(ngModel)]="nom" name="nom" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100%">
+      <mat-label>Pays</mat-label>
+      <input matInput [(ngModel)]="pays" name="pays" required />
+    </mat-form-field>
+
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px">
+      <button mat-stroked-button type="button" (click)="reset()" [disabled]="loading">Reset</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        <ng-container *ngIf="!loading; else loadingTpl">Créer</ng-container>
+        <ng-template #loadingTpl>
+          <mat-spinner diameter="20"></mat-spinner>
+        </ng-template>
+      </button>
+    </div>
+
+    <p *ngIf="success" style="margin-top:8px">{{ success }}</p>
+  </form>
+</mat-card>

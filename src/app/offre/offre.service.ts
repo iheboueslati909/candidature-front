@@ -10,6 +10,8 @@ export class OffreService {
   constructor(private http: HttpClient) {}
   async list() { return await firstValueFrom(this.http.get<OffreResponse[]>(`${environment.apiBaseUrl}/api/offres`)); }
   async create(req: { titre: string; description?: string; dateDebut: string; dateFin: string; etablissementId: number }) {
-    return await firstValueFrom(this.http.post<OffreResponse>(`${environment.apiBaseUrl}/api/offres`, req));
+    var res = await firstValueFrom(this.http.post<OffreResponse>(`${environment.apiBaseUrl}/api/offres`, req));
+    console.log("OffreService.create res=", res);
+    return res;
   }
 }

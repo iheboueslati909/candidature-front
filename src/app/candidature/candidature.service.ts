@@ -39,7 +39,7 @@ export class CandidatureService {
   return res;
   }
 
-  async listByUser(userId: number) {
+  async listByUser(userId: string) {
   const res = await firstValueFrom(this.http.get<CandidatureResponse[]>(`${environment.apiBaseUrl}/api/candidatures/user/${userId}`));
   return res;
   }

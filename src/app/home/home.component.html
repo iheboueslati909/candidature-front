@@ -1,20 +1,13 @@
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container class="sidenav-container" *ngIf="showSidenav; else fullContent">
   <mat-sidenav mode="side" opened class="sidenav">
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
-      <ng-container *ngIf="isCandidat(); else otherMenu">
-        <a mat-list-item routerLink="/candidature/history" routerLinkActive="active"><mat-icon> history</mat-icon><span> Historique des candidatures</span></a>
-        <a mat-list-item routerLink="/etablissements" routerLinkActive="active"><mat-icon> school</mat-icon><span> Etablissements</span></a>
-        <a mat-list-item routerLink="/offres" routerLinkActive="active"><mat-icon>work</mat-icon><span> Offres</span></a>
-        <a mat-list-item routerLink="/notification/list" routerLinkActive="active"><mat-icon> notifications</mat-icon><span> Notifications</span></a>
+      <ng-container *ngFor="let item of menuItems">
+        <a mat-list-item [routerLink]="item.route" routerLinkActive="active" *ngIf="canView(item)">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
       </ng-container>
-      <ng-template #otherMenu>
-        <a mat-list-item routerLink="/candidature/list" routerLinkActive="active"><mat-icon> assignment</mat-icon><span> Candidatures</span></a>
-        <a mat-list-item routerLink="/etablissements" routerLinkActive="active"><mat-icon> school</mat-icon><span> Etablissements</span></a>
-        <a mat-list-item routerLink="/offres/new" routerLinkActive="active"><mat-icon>add</mat-icon><span> Créer offre</span></a>
-        <a mat-list-item routerLink="/offres" routerLinkActive="active"><mat-icon>work</mat-icon><span> Offres</span></a>
-        <a mat-list-item routerLink="/notification/list" routerLinkActive="active"><mat-icon>notifications</mat-icon><span> Notifications</span></a>
-      </ng-template>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -33,3 +26,8 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<ng-template #fullContent>
+  <!-- No sidenav/toolbar on login/register -->
+  <router-outlet></router-outlet>
+</ng-template>

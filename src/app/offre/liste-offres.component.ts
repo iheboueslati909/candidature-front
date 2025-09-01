@@ -14,14 +14,15 @@ import { OffreService, OffreResponse } from './offre.service';
 import { CandidatureService } from '../candidature/candidature.service';
 import { ProfileEtudiantService } from '../profile/profile-etudiant.service';
 import { FavoriteService } from '../favorite/favorite.service';
-import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
 import { MailSendComponent } from '../mail/mail-send/mail-send.component';
+import { ApplyDialogComponent } from './apply-dialog.component';
+import { AuthUserService } from '../DTO/auth-user.service';
 
 @Component({
   selector: 'app-liste-offres',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatTableModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatDialogModule, MailSendComponent],
+  imports: [CommonModule, FormsModule, MatCardModule, MatTableModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatDialogModule, MailSendComponent, ApplyDialogComponent],
   template: `
     <mat-card>
       <mat-card-title>Liste des offres</mat-card-title>
@@ -66,34 +67,7 @@ import { MailSendComponent } from '../mail/mail-send/mail-send.component';
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <!-- Apply popup (simple card) -->
-      <div *ngIf="selectedOffre() !== null" style="position:absolute; left:0; right:0; top:100%; margin-top:8px">
-        <mat-card>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong>Postuler à l'offre</strong>
-            <button mat-icon-button (click)="cancelApply()"><mat-icon>close</mat-icon></button>
-          </div>
-          <div style="margin-top:8px">
-            <mat-form-field appearance="fill" style="width:100%">
-              <mat-label>Nom étudiant</mat-label>
-              <input matInput [value]="formStudentName()" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width:100%">
-              <mat-label>Moyenne</mat-label>
-              <input matInput type="number" [value]="formMoyenne()" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width:100%">
-              <mat-label>Date début</mat-label>
-              <input matInput type="date" [value]="formDateDebut()" disabled />
-            </mat-form-field>
-          </div>
-          <div style="margin-top:8px; display:flex; gap:8px">
-            <button mat-flat-button color="primary" (click)="confirmApply()" [disabled]="applying()">Confirmer</button>
-            <button mat-stroked-button (click)="cancelApply()" [disabled]="applying()">Annuler</button>
-          </div>
-          <p *ngIf="success()" style="margin-top:8px">{{success()}}</p>
-        </mat-card>
-      </div>
+  <!-- Apply now opens a dialog -->
 
   <!-- send email now uses a Material dialog (MailSendComponent) -->
     </mat-card>
@@ -102,12 +76,15 @@ import { MailSendComponent } from '../mail/mail-send/mail-send.component';
     <ng-container *ngIf="false">
       <app-mail-send></app-mail-send>
     </ng-container>
+    <!-- reference ApplyDialogComponent so standalone import is recognized by the compiler -->
+    <ng-container *ngIf="false">
+      <app-apply-dialog></app-apply-dialog>
+    </ng-container>
   `
 })
 export class ListeOffresComponent {
   offres = signal<OffreResponse[]>([]);
   favorisMap: WritableSignal<Record<number, number | null>> = signal({});
-  selectedOffre = signal<number | null>(null);
   formStudentName = signal<string>('');
   formMoyenne = signal<number>(10);
   formDateDebut = signal<string>('');
@@ -116,19 +93,23 @@ export class ListeOffresComponent {
 
   sendSuccess = signal<string | null>(null);
 
-  role = signal<string | null>(null); // signal for role
-
   constructor(
     private svc: OffreService,
     private favSvc: FavoriteService,
-    private auth: AuthService,
     private candidatureSvc: CandidatureService,
     private profileSvc: ProfileEtudiantService,
+    private authUserService: AuthUserService,
   private mailSvc: MailService,
   private dialog: MatDialog
   ) {
-    this.role.set(auth.getRole());
     this.load();
+  }
+
+    get roles(): string[] {
+    return (this.authUserService.getRoles() || []).map(r => r.toUpperCase());
+  }
+    isCandidat(): boolean {
+    return this.roles.includes('STUDENT');
   }
 
   get displayedColumns() {
@@ -139,15 +120,12 @@ export class ListeOffresComponent {
     return cols;
   }
 
-  isCandidat() {
-    return (this.role() || '').toLowerCase() === 'candidat';
-  }
 
   async load() {
     const data = await this.svc.list();
     this.offres.set(data);
 
-    const userId = this.auth.getUserId();
+    const userId = this.authUserService.getUserId();
     if (userId && this.isCandidat()) { // only load favs for "candidat"
       const favs: any[] = await this.favSvc.listForUser(userId);
       const map: Record<number, number | null> = {};
@@ -165,7 +143,7 @@ export class ListeOffresComponent {
 
   async toggleFavorite(offreId: number, checked: boolean) {
     if (!this.isCandidat()) return; // safety check
-    const userId = this.auth.getUserId();
+    const userId = this.authUserService.getUserId();
     if (!userId) return;
 
     const currentMap = { ...this.favorisMap() };
@@ -196,44 +174,14 @@ export class ListeOffresComponent {
   }
 
   async openApply(o: OffreResponse) {
-    this.selectedOffre.set(o.id);
-    this.formStudentName.set(this.auth.getFullName() ?? '');
-    this.formMoyenne.set(10);
-    this.formDateDebut.set(o.dateDebut?.slice(0, 10) ?? new Date().toISOString().slice(0, 10));
     this.success.set(null);
-
-    const userId = this.auth.getUserId();
-    if (userId) {
-      try {
-        const profile = await this.profileSvc.getByUserId(userId);
-        if (profile?.moyenne != null) this.formMoyenne.set(profile.moyenne);
-      } catch {}
-    }
-  }
-
-  cancelApply() { this.selectedOffre.set(null); }
-
-  async confirmApply() {
-    const offreId = this.selectedOffre();
-    if (!offreId) return;
-    const userId = this.auth.getUserId();
-    if (!userId) { alert('Veuillez vous connecter.'); return; }
-    this.applying.set(true);
-    try {
-      await this.candidatureSvc.create({
-        userId,
-        studentName: this.formStudentName(),
-        moyenne: this.formMoyenne(),
-        dateDebutMobilite: this.formDateDebut(),
-        offreId
-      });
-      this.success.set('Candidature créée');
-      setTimeout(() => { this.selectedOffre.set(null); this.success.set(null); }, 1500);
-    } catch {
-      alert('Erreur lors de la création de la candidature');
-    } finally {
-      this.applying.set(false);
-    }
+    const ref = this.dialog.open(ApplyDialogComponent, { width: '600px', data: { offer: o } });
+    ref.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.success.set('Candidature créée');
+        setTimeout(() => this.success.set(null), 1500);
+      }
+    });
   }
 
   openSendEmail(offreId: number) {

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environment';
 
-export interface RatingRequest { userId: number; etablissementId: number; score: number }
+export interface RatingRequest { userId: string; etablissementId: number; score: number }
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {

@@ -11,7 +11,7 @@ export class FavoriteService {
   return await firstValueFrom(this.http.post(`${environment.apiBaseUrl}/api/favoris`, fav));
   }
 
-  async listForUser(userId: number) {
+  async listForUser(userId: string) {
   return await firstValueFrom(this.http.get<any[]>(`${environment.apiBaseUrl}/api/favoris/user/${userId}`));
   }
   async delete(favId: number) {
