@@ -13,6 +13,8 @@ import { ListeOffresComponent } from './offre/liste-offres.component';
 import { CreateOffreComponent } from './offre/create-offre.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +25,8 @@ export const routes: Routes = [
       { path: 'candidature/new', component: CandidatureFormComponent },
       { path: 'candidature/history', component: CandidatureHistoryComponent },
       { path: 'mail/send', component: MailSendComponent },
+      { path: 'user/list', component: UserListComponent },
+      { path: 'user/details/:id', component: UserDetailsComponent },  
       // { path: 'notification/list', component: NotificationListComponent },
       { path: 'rating/form', component: RatingFormComponent },
       { path: 'favorite/list', component: FavoriteListComponent },

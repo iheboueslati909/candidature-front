@@ -1,33 +1,43 @@
-<mat-card>
-  <mat-card-title>Historique des candidatures</mat-card-title>
+<div class="application-history-container">
+  <h2 class="list-title">
+    Historique des candidatures <span><i class="ri-file-list-line"></i></span>
+  </h2>
 
-  <table mat-table [dataSource]="items()" class="mat-elevation-z8">
+  <div class="table-card shadow-lg">
+    <div class="table-responsive">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th class="header-cell">Date</th>
+            <th class="header-cell">Étudiant</th>
+            <th class="header-cell">Moyenne</th>
+            <th class="header-cell">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of items()" class="user-row">
+            <td class="data-cell">{{ c.createdAt | date:'short' }}</td>
+            <td class="data-cell">{{ c.studentName }}</td>
+            <td class="data-cell">{{ c.moyenne }}</td>
+            <td class="data-cell center">
+              <i class="status-icon"
+                [ngClass]="{
+                  'ri-time-line status-pending': c.status === 'PENDING',
+                  'ri-check-line status-active': c.status === 'ACCEPTED',
+                  'ri-close-line status-inactive': c.status === 'REFUSED',
+                  'ri-hourglass-2-line status-waiting': c.status === 'WAITING_LIST'
+                }">
+              </i>
+            </td>
 
-    <!-- Created At Column -->
-    <ng-container matColumnDef="createdAt">
-      <th mat-header-cell *matHeaderCellDef> Date </th>
-      <td mat-cell *matCellDef="let c"> {{ c.createdAt | date:'short' }} </td>
-    </ng-container>
-
-    <!-- Student Name Column -->
-    <ng-container matColumnDef="studentName">
-      <th mat-header-cell *matHeaderCellDef> Étudiant </th>
-      <td mat-cell *matCellDef="let c"> {{ c.studentName }} </td>
-    </ng-container>
-
-    <!-- Moyenne Column -->
-    <ng-container matColumnDef="moyenne">
-      <th mat-header-cell *matHeaderCellDef> Moyenne </th>
-      <td mat-cell *matCellDef="let c"> {{ c.moyenne }} </td>
-    </ng-container>
-
-    <!-- Status Column -->
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef> Statut </th>
-      <td mat-cell *matCellDef="let c"> <strong>{{ c.status }}</strong> </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</mat-card>
+          </tr>
+          <tr *ngIf="!items() || items().length === 0">
+            <td class="no-data-row" [attr.colspan]="4">
+              Aucune candidature trouvée.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

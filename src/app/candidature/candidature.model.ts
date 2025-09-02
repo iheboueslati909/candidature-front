@@ -13,7 +13,7 @@ export interface CandidatureResponse {
   studentName: string;
   moyenne: number;
   dateDebutMobilite: string;
-  status: 'PENDING' | 'ACCEPTED' | 'REFUSED';
+  status: 'PENDING' | 'ACCEPTED' | 'REFUSED' | 'WAITING_LIST';
   offreId?: number;
   etablissementNom?: string;
   offreTitre?:string;

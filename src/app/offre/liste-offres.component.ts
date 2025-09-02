@@ -1,15 +1,5 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { OffreService, OffreResponse } from './offre.service';
 import { CandidatureService } from '../candidature/candidature.service';
 import { ProfileEtudiantService } from '../profile/profile-etudiant.service';
@@ -18,81 +8,113 @@ import { MailService } from '../mail/mail.service';
 import { MailSendComponent } from '../mail/mail-send/mail-send.component';
 import { ApplyDialogComponent } from './apply-dialog.component';
 import { AuthUserService } from '../DTO/auth-user.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-liste-offres',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatTableModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatDialogModule, MailSendComponent, ApplyDialogComponent],
+  styleUrls: ['./liste-offres.component.css'],
+  imports: [
+    CommonModule,
+    MatDialogModule,   // kept only because you still use dialogs
+    MailSendComponent,
+    ApplyDialogComponent
+  ],
   template: `
-    <mat-card>
-      <mat-card-title>Liste des offres</mat-card-title>
+    <div class="offer-list-container">
+      <h2 class="list-title">
+        Liste des offres <span><i class="ri-briefcase-line"></i></span>
+      </h2>
 
-      <table mat-table [dataSource]="offres()" style="width:100%">
-        <ng-container matColumnDef="fav" *ngIf="isCandidat()">
-          <th mat-header-cell *matHeaderCellDef> Fav </th>
-          <td mat-cell *matCellDef="let o"> <mat-checkbox [checked]="isFavorite(o.id)" (change)="toggleFavorite(o.id, $event.checked)"></mat-checkbox> </td>
-        </ng-container>
+      <div class="table-card shadow-lg">
+        <div class="table-responsive">
+          <table class="offer-table">
+            <thead>
+              <tr>
+                <th *ngIf="isCandidat()" class="header-cell text-center">Fav</th>
+                <th *ngIf="isCandidat()" class="header-cell text-center">Postuler</th>
+                <th class="header-cell">Titre</th>
+                <th class="header-cell">Description</th>
+                <th class="header-cell">Période</th>
+                <th class="header-cell text-center">Status</th>
+                <th *ngIf="!isCandidat()" class="header-cell text-center">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of offres()" class="data-row">
+                <!-- Favorite toggle -->
+                  <td *ngIf="isCandidat()" class="data-cell text-center">
+                    <button class="action-button tooltip-container"
+                            (click)="toggleFavorite(o.id, !isFavorite(o.id))">
+                      <i [ngClass]="{
+                            'ri-heart-3-fill text-red-600': isFavorite(o.id),
+                            'ri-heart-3-line text-gray-300': !isFavorite(o.id)
+                          }"
+                        class="action-icon"
+                        style="transition: color 0.2s;">
+                      </i>
+                      <span class="tooltip-text">
+                        {{ isFavorite(o.id) ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+                      </span>
+                    </button>
+                    </td>
+                <!-- Apply button -->
+                <td *ngIf="isCandidat()" class="data-cell text-center">
+                  <button class="btn btn-primary-2" (click)="openApply(o)">
+                    <i class="ri-send-plane-line"></i> Postuler
+                  </button>
+                </td>
 
-        <ng-container matColumnDef="apply">
-          <th mat-header-cell *matHeaderCellDef> Postuler </th>
-          <td mat-cell *matCellDef="let o"> <button mat-button (click)="openApply(o)">Postuler</button> </td>
-        </ng-container>
+                <!-- Basic info -->
+                <td class="data-cell">{{ o.titre }}</td>
+                <td class="data-cell">{{ o.description }}</td>
+                <td class="data-cell">{{ o.dateDebut | date }} — {{ o.dateFin | date }}</td>
 
-        <ng-container matColumnDef="titre">
-          <th mat-header-cell *matHeaderCellDef> Titre </th>
-          <td mat-cell *matCellDef="let o"> {{o.titre}} </td>
-        </ng-container>
+                <!-- Status -->
+                <td class="data-cell text-center">
+                  <i class="status-icon"
+                     [ngClass]="{
+                       'ri-check-line status-active': o.active,
+                       'ri-close-line status-inactive': !o.active
+                     }">
+                  </i>
+                </td>
 
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef> Description </th>
-          <td mat-cell *matCellDef="let o"> {{o.description}} </td>
-        </ng-container>
+                <!-- Email action (non-candidat only) -->
+                <td *ngIf="!isCandidat()" class="data-cell text-center">
+                  <button class="action-button tooltip-container" (click)="openSendEmail(o.id)">
+                    <i class="ri-mail-send-line action-icon"></i>
+                    <span class="tooltip-text">Envoyer</span>
+                  </button>
+                </td>
+              </tr>
 
-        <ng-container matColumnDef="periode">
-          <th mat-header-cell *matHeaderCellDef> Période </th>
-          <td mat-cell *matCellDef="let o"> {{o.dateDebut | date}} — {{o.dateFin | date}} </td>
-        </ng-container>
+              <!-- Empty state -->
+              <tr *ngIf="!offres() || offres().length === 0">
+                <td class="no-data-row" [attr.colspan]="isCandidat() ? 7 : 5">
+                  Aucune offre trouvée.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-                <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef> Email </th>
-          <td mat-cell *matCellDef="let o"> <button mat-button (click)="openSendEmail(o.id)">Envoyer</button> </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let o"> {{o.active ? 'active' : 'inactive'}} </td>
-        </ng-container>
-
-
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-  <!-- Apply now opens a dialog -->
-
-  <!-- send email now uses a Material dialog (MailSendComponent) -->
-    </mat-card>
-
-    <!-- reference MailSendComponent so standalone import is recognized by the compiler -->
-    <ng-container *ngIf="false">
-      <app-mail-send></app-mail-send>
-    </ng-container>
-    <!-- reference ApplyDialogComponent so standalone import is recognized by the compiler -->
-    <ng-container *ngIf="false">
-      <app-apply-dialog></app-apply-dialog>
-    </ng-container>
+      <!-- Success messages -->
+      <div *ngIf="success()" class="success-message">
+        <i class="ri-check-double-line"></i> {{ success() }}
+      </div>
+      <div *ngIf="sendSuccess()" class="success-message">
+        <i class="ri-mail-check-line"></i> {{ sendSuccess() }}
+      </div>
+    </div>
   `
 })
 export class ListeOffresComponent {
   offres = signal<OffreResponse[]>([]);
   favorisMap: WritableSignal<Record<number, number | null>> = signal({});
-  formStudentName = signal<string>('');
-  formMoyenne = signal<number>(10);
-  formDateDebut = signal<string>('');
   applying = signal(false);
   success = signal<string | null>(null);
-
   sendSuccess = signal<string | null>(null);
 
   constructor(
@@ -101,36 +123,26 @@ export class ListeOffresComponent {
     private candidatureSvc: CandidatureService,
     private profileSvc: ProfileEtudiantService,
     private authUserService: AuthUserService,
-  private mailSvc: MailService,
-  private dialog: MatDialog
+    private mailSvc: MailService,
+    private dialog: MatDialog
   ) {
     this.load();
   }
 
-    get roles(): string[] {
+  get roles(): string[] {
     return (this.authUserService.getRoles() || []).map(r => r.toUpperCase());
   }
-    isCandidat(): boolean {
+
+  isCandidat(): boolean {
     return this.roles.includes('STUDENT');
   }
-    isSuperAdmin(): boolean {
-    return this.roles.includes('SUPER_ADMIN');
-  }
-
-  get displayedColumns() {
-    const cols: string[] = [];
-    cols.push('titre', 'description', 'periode', 'status','fav', 'apply');
-    if (this.isSuperAdmin()) cols.push('email');
-    return cols;
-  }
-
 
   async load() {
     const data = await this.svc.list();
     this.offres.set(data);
 
     const userId = this.authUserService.getUserId();
-    if (userId && this.isCandidat()) { // only load favs for "candidat"
+    if (userId && this.isCandidat()) {
       const favs: any[] = await this.favSvc.listForUser(userId);
       const map: Record<number, number | null> = {};
       favs.forEach(f => {
@@ -146,7 +158,7 @@ export class ListeOffresComponent {
   }
 
   async toggleFavorite(offreId: number, checked: boolean) {
-    if (!this.isCandidat()) return; // safety check
+    if (!this.isCandidat()) return;
     const userId = this.authUserService.getUserId();
     if (!userId) return;
 
@@ -193,7 +205,7 @@ export class ListeOffresComponent {
     const ref = this.dialog.open(MailSendComponent, { width: '600px', data: { offerId: offreId } });
     ref.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.sendSuccess.set('Email envoy\u00e9');
+        this.sendSuccess.set('Email envoyé');
         setTimeout(() => this.sendSuccess.set(null), 1500);
       }
     });

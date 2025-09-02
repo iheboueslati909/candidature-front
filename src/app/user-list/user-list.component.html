@@ -1,0 +1,82 @@
+<div class="user-list-container">
+  <h2 class="list-title">Liste des utilisateurs <span><i class="ri-team-line"></i></span></h2>
+
+  <div class="search-field-wrapper">
+    <div class="input-group">
+      <input type="text" 
+             (keyup)="onSearch($event)" 
+             placeholder="Rechercher par nom, prénom, email..." 
+             class="input-field" />
+      <i class="ri-search-line search-icon"></i>
+    </div>
+  </div>
+
+  <div class="table-card shadow-lg">
+    <div class="table-responsive">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th class="header-cell">Nom d'utilisateur</th>
+            <th class="header-cell">Email</th>
+            <th class="header-cell">Rôles</th>
+            <th class="header-cell text-center">Activé</th>
+            <th class="header-cell text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users" class="user-row">
+            <td class="data-cell">{{ user.username }}</td>
+            <td class="data-cell">{{ user.email }}</td>
+            <td class="data-cell">
+              <span *ngFor="let role of user.roles" class="role-chip">{{ role }}</span>
+            </td>
+            <td class="data-cell text-center">
+              <i class="status-icon"
+                 [ngClass]="{
+                   'ri-check-line status-active': user.enabled,
+                   'ri-close-line status-inactive': !user.enabled
+                 }">
+              </i>
+            </td>
+            <td class="data-cell text-center">
+              <a [routerLink]="['/user/details', user.id]" 
+                 class="action-button tooltip-container">
+                <i class="ri-eye-line action-icon"></i>
+                <span class="tooltip-text">Voir les détails</span>
+              </a>
+            </td>
+          </tr>
+          <tr *ngIf="!users || users.length === 0">
+            <td class="no-data-row" [attr.colspan]="5">
+              Aucun utilisateur trouvé correspondant à la recherche.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="paginator-container">
+    <button class="paginator-button"
+            [disabled]="currentPage === 0"
+            (click)="onPageChange({ pageIndex: 0, pageSize: pageSize, length: totalItems })">
+      <i class="ri-arrow-left-double-line"></i>
+    </button>
+    <button class="paginator-button"
+            [disabled]="currentPage === 0"
+            (click)="onPageChange({ pageIndex: currentPage - 1, pageSize: pageSize, length: totalItems })">
+      <i class="ri-arrow-left-s-line"></i>
+    </button>
+    <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <button class="paginator-button"
+            [disabled]="currentPage + 1 >= totalPages"
+            (click)="onPageChange({ pageIndex: currentPage + 1, pageSize: pageSize, length: totalItems })">
+      <i class="ri-arrow-right-s-line"></i>
+    </button>
+    <button class="paginator-button"
+            [disabled]="currentPage + 1 >= totalPages"
+            (click)="onPageChange({ pageIndex: totalPages - 1, pageSize: pageSize, length: totalItems })">
+      <i class="ri-arrow-right-double-line"></i>
+    </button>
+  </div>
+</div>

@@ -13,18 +13,36 @@ import { AuthUserService } from '../DTO/auth-user.service';
 @Component({
   selector: 'app-rating-dialog',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, ReactiveFormsModule],
+  styleUrls: ['./rating-dialog.component.css'],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    ReactiveFormsModule
+  ],
   template: `
-    <h3 style="margin-left:12px;margin-right:12px"  mat-dialog-title>Noter {{ data.nom }}</h3>
-    <div style="margin-top:8px;margin-left:12px;margin-right:12px">
-      <mat-form-field appearance="fill" style="width:100%">
-        <mat-label>Score (1-5)</mat-label>
-        <input matInput type="number" [formControl]="scoreControl" min="1" max="5" />
-      </mat-form-field>
-    </div>
-    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px">
-      <button mat-stroked-button (click)="close(false)">Annuler</button>
-      <button mat-flat-button color="primary" (click)="submit()">Envoyer</button>
+    <div class="popup-container">
+      <div class="popup-header">
+        <h3 class="popup-title">Noter {{ data.nom }}</h3>
+      </div>
+
+      <div class="popup-body">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Score (1-5)</mat-label>
+          <input matInput type="number" [formControl]="scoreControl" min="1" max="5" />
+        </mat-form-field>
+      </div>
+
+      <div class="popup-actions">
+        <button mat-stroked-button class="btn-cancel" (click)="close(false)">
+          Annuler
+        </button>
+        <button mat-flat-button class="btn-submit" (click)="submit()">
+          Envoyer
+        </button>
+      </div>
     </div>
   `
 })
@@ -42,13 +60,16 @@ export class RatingDialogComponent {
 
   async submit() {
     const userId = this.auth.getUserId();
-    if (!userId) { alert('Veuillez vous connecter'); return; }
+    if (!userId) {
+      alert('Veuillez vous connecter');
+      return;
+    }
     const score = Number(this.scoreControl.value) || 5;
     try {
       await this.ratingSvc.submit({ userId, etablissementId: this.data.id, score });
       this.dialogRef.close(true);
     } catch (e) {
-      alert('Erreur lors de l envoi de la note');
+      alert('Erreur lors de l’envoi de la note');
     }
   }
 }

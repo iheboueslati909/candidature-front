@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css');
 
-.candidature-list-container {
+.offer-list-container {
   width: 100%;
   padding: 0 16px; /* optional, some spacing on sides */
   box-sizing: border-box;
@@ -22,174 +22,6 @@
   width: 100%; /* most important: table takes all available space */
   border-collapse: collapse; /* optional but cleaner */
 }
-
-/* General Styling & Color Palette */
-:root {
-  --bg-dark: #1e1e2d;
-  --card-bg: #2d2d44;
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --primary-accent: #6b40e3;
-  --hover-bg: rgba(107, 64, 227, 0.1);
-  --success-color: #4cd137;
-  --warning-color: #fbc531;
-  --danger-color: #e84118;
-  --info-color: #5352ed;
-}
-
-body {
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
-  font-family: 'Roboto', sans-serif;
-}
-
-/* Card Styling */
-.modern-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-  max-width: 90%;
-  margin: 2rem auto;
-}
-
-.card-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--primary-accent);
-  padding-bottom: 0.5rem;
-}
-
-/* Controls */
-.controls-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
-}
-
-.filter-field {
-  width: 250px;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: var(--text-secondary) !important;
-}
-
-.mat-form-field-label {
-  color: var(--text-secondary) !important;
-}
-
-.mat-select-value {
-  color: var(--text-primary) !important;
-}
-
-.sort-button {
-  border: 1px solid var(--primary-accent) !important;
-  color: var(--primary-accent) !important;
-  border-radius: 50px;
-  padding: 0.5rem 1.5rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.sort-button:hover {
-  background-color: var(--primary-accent) !important;
-  color: var(--text-primary) !important;
-  box-shadow: 0 5px 15px rgba(107, 64, 227, 0.4);
-}
-
-/* Table Styling */
-.table-container {
-  overflow-x: auto;
-  background-color: var(--card-bg);
-  border-radius: 10px;
-}
-
-.stylish-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--text-primary);
-}
-
-.stylish-table th, .stylish-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.table-header-row th {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: var(--text-secondary);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-}
-
-.table-data-row:hover {
-  background-color: var(--hover-bg);
-  cursor: pointer;
-}
-
-/* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-.pending {
-  background-color: var(--warning-color);
-}
-
-.accepted {
-  background-color: var(--success-color);
-}
-
-.refused {
-  background-color: var(--danger-color);
-}
-
-.waiting_list {
-  background-color: var(--info-color);
-}
-
-/* Action Buttons */
-.action-btn {
-  color: var(--text-secondary);
-  transition: all 0.2s ease-in-out;
-  margin: 0 0.2rem;
-}
-
-.action-btn:hover {
-  transform: scale(1.1);
-}
-
-.accept-btn:hover { color: var(--success-color); }
-.refuse-btn:hover { color: var(--danger-color); }
-.hold-btn:hover { color: var(--info-color); }
-.delete-btn:hover { color: var(--danger-color); }
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .controls-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .filter-field {
-    width: 100%;
-  }
-}
-
-
 
 /* --- General container and typography --- */
 .user-list-container {
@@ -229,6 +61,7 @@ body {
   background-color: #f3f4f6;
   cursor: default;
 }
+
 /* --- Search field styling --- */
 .search-field-wrapper {
   margin-bottom: 30px;
@@ -499,12 +332,8 @@ body {
     padding: 4px 10px;
   }
 }
-.form-input { 
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
-    font-size: 812x;
-    transition: all 0.3s ease;
-    background-color: #fafbfc;
+
+.btn-primary-2 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
 }

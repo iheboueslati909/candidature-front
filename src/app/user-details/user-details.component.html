@@ -1,0 +1,145 @@
+
+<div class="user-detail-wrapper">
+  <button (click)="goBack()" class="go-back-button">
+    <i class="ri-arrow-go-back-line"></i>
+    Retour
+  </button>
+
+  <div class="container py-4" *ngIf="user">
+    <div class="user-card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <i class="ri-user-3-line"></i>
+        </div>
+        <h2 class="card-title">Détails de l'utilisateur</h2>
+      </div>
+
+      <div class="card-content">
+        <div class="details-grid">
+          <div class="grid-column">
+            <h3 class="column-title">Informations Personnelles</h3>
+            <ul class="detail-list">
+              <li>
+                <span class="label">Nom:</span>
+                <span class="value">{{ user.firstname }} {{ user.lastname }}</span>
+              </li>
+              <li>
+                <span class="label">Nom d'utilisateur:</span>
+                <span class="value">{{ user.username }}</span>
+              </li>
+              <li>
+                <span class="label">Email:</span>
+                <span class="value">{{ user.email }}</span>
+              </li>
+              <li>
+                <span class="label">CIN:</span>
+                <span class="value">{{ user.cin }}</span>
+              </li>
+              <li>
+                <span class="label">Genre:</span>
+                <span class="value">{{ user.gender }}</span>
+              </li>
+              <li>
+                <span class="label">Nationalité:</span>
+                <span class="value">{{ user.nationality }}</span>
+              </li>
+              <li>
+                <span class="label">Lieu de naissance:</span>
+                <span class="value">{{ user.placeOfBirth }}</span>
+              </li>
+              <li>
+                <span class="label">Date de naissance:</span>
+                <span class="value">{{ user.dateOfBirth | date }}</span>
+              </li>
+              <li>
+                <span class="label">Statut:</span>
+                <span
+                  class="value status-badge"
+                  [ngClass]="{
+                    'status-active': user.enabled,
+                    'status-inactive': !user.enabled
+                  }"
+                >
+                  {{ user.enabled ? "Actif" : "Inactif" }}
+                </span>
+              </li>
+              <li>
+                <span class="label">Mot de passe à modifier ?</span>
+                <span class="value">{{ user.passwordNeedToBeModified ? "Oui" : "Non" }}</span>
+              </li>
+            </ul>
+
+            <button class="action-button accent" (click)="toggleStatus()">
+              {{ user.enabled ? "Désactiver" : "Activer" }} l'utilisateur
+            </button>
+          </div>
+
+          <div class="grid-column">
+            <h3 class="column-title">Rôles & Gestion</h3>
+            <ul class="detail-list role-list">
+              <ng-container *ngIf="user.roles && user.roles.length > 0; else noRoles">
+                <li *ngFor="let role of user.roles">
+                  <div class="role-chip">
+                    <span class="role-name">{{ role }}</span>
+                    <button class="remove-role-button" (click)="removeRole(role)">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </li>
+              </ng-container>
+              <ng-template #noRoles>
+                <li><span class="no-roles-message">Aucun rôle attribué.</span></li>
+              </ng-template>
+            </ul>
+
+            <div class="form-group">
+              <label for="role-select" class="form-label">Ajouter un rôle</label>
+              <div class="select-wrapper">
+                <select id="role-select" class="custom-select" [(ngModel)]="newRole" name="role">
+                  <option value="" disabled selected>Sélectionner un rôle</option>
+                  <option *ngFor="let role of availableRoles" [value]="role.name">
+                    {{ role.name }}
+                  </option>
+                </select>
+                <i class="ri-arrow-down-s-line select-icon"></i>
+              </div>
+            </div>
+
+            <button class="action-button primary" (click)="addRole()" [disabled]="!newRole">
+              Ajouter le rôle
+            </button>
+            <button class="action-button warn" (click)="deleteUser()">
+              Supprimer l'utilisateur
+            </button>
+          </div>
+
+          <div class="grid-column">
+            <h3 class="column-title">Historique</h3>
+            <ul class="detail-list">
+              <li>
+                <span class="label">Dernière connexion:</span>
+                <span class="value">{{ user.lastLogin | date : "short" }}</span>
+              </li>
+              <li>
+                <span class="label">Créé par:</span>
+                <span class="value">{{ user.createBy }}</span>
+              </li>
+              <li>
+                <span class="label">Date de création:</span>
+                <span class="value">{{ user.createdDate | date : "short" }}</span>
+              </li>
+              <li>
+                <span class="label">Modifié par:</span>
+                <span class="value">{{ user.lastModifiedBy }}</span>
+              </li>
+              <li>
+                <span class="label">Dernière modification:</span>
+                <span class="value">{{ user.lastModifiedDate | date : "short" }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

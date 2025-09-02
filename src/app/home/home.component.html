@@ -1,44 +1,37 @@
-<mat-sidenav-container class="sidenav-container" *ngIf="showSidenav; else fullContent">
-  <mat-sidenav mode="side" opened class="sidenav">
-    <mat-toolbar color="primary">Menu</mat-toolbar>
-    <mat-nav-list>
+<div class="app-wrapper" *ngIf="showSidenav; else fullContent">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+    </div>
+    <nav class="sidebar-nav">
       <ng-container *ngFor="let item of menuItems">
-        <a mat-list-item *ngIf="canView(item) && item.route !== '/notification/list'" [routerLink]="item.route" routerLinkActive="active">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-        </a>
-        <!-- Notifications opens a dialog instead of routing -->
-        <a mat-list-item *ngIf="canView(item) && item.route === '/notification/list'" (click)="openNotifications()">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-          <mat-icon *ngIf="hasNotifications" color="warn" class="notification-dot">fiber_manual_record</mat-icon>
+        <a class="nav-item" [routerLink]="item.route" routerLinkActive="active" *ngIf="canView(item)">
+          <div class="icon-wrapper">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
+          <span class="label">{{ item.label }}</span>
         </a>
       </ng-container>
-    </mat-nav-list>
-  </mat-sidenav>
+    </nav>
+  </aside>
 
-  <mat-sidenav-content>
-    <mat-toolbar color="primary" class="topbar">
-      <button mat-icon-button aria-label="Toggle sidenav" disabled>
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span class="title">Candidature</span>
-      <span class="spacer"></span>
-      <button mat-icon-button aria-label="Account"><mat-icon>account_circle</mat-icon></button>
-    </mat-toolbar>
+  <main class="main-content-area">
+    <header class="top-header">
+      <div class="header-left">
+        <span class="page-title">Plateforme de mobilité</span>
+      </div>
+      <div class="header-right">
+        <button class="icon-button" aria-label="Account">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </header>
 
-    <div class="content">
+    <div >
       <router-outlet></router-outlet>
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-  <!-- reference NotificationListComponent so standalone import is recognized by the compiler -->
-  <ng-container *ngIf="false">
-    <app-notification-list></app-notification-list>
-  </ng-container>
+  </main>
+</div>
 
 <ng-template #fullContent>
-  <!-- No sidenav/toolbar on login/register -->
   <router-outlet></router-outlet>
 </ng-template>

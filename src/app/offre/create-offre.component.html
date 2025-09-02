@@ -1,48 +1,77 @@
-<mat-card>
-  <mat-card-title>Créer une offre</mat-card-title>
-  <!-- 👇 give the form a template reference -->
-  <form #offreForm="ngForm" (ngSubmit)="submit()" style="display:flex; flex-direction:column; gap:12px; margin:12px">
-
-    <mat-form-field appearance="fill">
-      <mat-label>Titre</mat-label>
-      <input matInput name="titre" [(ngModel)]="titre" required />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Description</mat-label>
-      <textarea matInput name="description" [(ngModel)]="description"></textarea>
-    </mat-form-field>
-
-    <div style="display:flex; gap:8px">
-      <mat-form-field appearance="fill" style="flex:1">
-        <mat-label>Date début</mat-label>
-        <input matInput type="date" name="dateDebut" [(ngModel)]="dateDebut" required />
-      </mat-form-field>
-      <mat-form-field appearance="fill" style="flex:1">
-        <mat-label>Date fin</mat-label>
-        <input matInput type="date" name="dateFin" [(ngModel)]="dateFin" required />
-      </mat-form-field>
+<div class="form-container">
+  <div class="form-card">
+    <div class="card-header">
+      <h2 class="title">Créer une offre</h2>
+      <p class="subtitle">Ajouter une nouvelle offre</p>
     </div>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Etablissement</mat-label>
-      <mat-select name="etablissementId" [(ngModel)]="etablissementId" required>
-        <mat-option [value]="null">-- Choisir --</mat-option>
-        <mat-option *ngFor="let e of etablissements" [value]="e.id">
-          {{e.nom}} ({{e.pays}})
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <form #offreForm="ngForm" (ngSubmit)="submit()" class="establishment-form">
+      <div class="form-section">
+        <div class="form-group">
+          <label for="titre" class="form-label">Titre *</label>
+          <input type="text" id="titre" class="form-input" [(ngModel)]="titre" name="titre"
+                 placeholder="Entrez le titre de l'offre" required />
+        </div>
 
-    <div style="display:flex; gap:8px; margin-top:8px">
-      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
-        <ng-container *ngIf="!loading; else loadingTpl">Créer</ng-container>
-        <ng-template #loadingTpl>
-          <mat-spinner diameter="20"></mat-spinner>
-        </ng-template>
-      </button>
-    </div>
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <textarea id="description" class="form-input" [(ngModel)]="description" name="description"
+                    placeholder="Entrez une description"></textarea>
+        </div>
 
-    <p *ngIf="message">{{message}}</p>
-  </form>
-</mat-card>
+        <div class="form-group-inline">
+          <div class="form-group">
+            <label for="dateDebut" class="form-label">Date début *</label>
+            <input type="date" id="dateDebut" class="form-input" [(ngModel)]="dateDebut" name="dateDebut" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dateFin" class="form-label">Date fin *</label>
+            <input type="date" id="dateFin" class="form-input" [(ngModel)]="dateFin" name="dateFin" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="etablissementId" class="form-label">Établissement *</label>
+          <select id="etablissementId" class="form-input" [(ngModel)]="etablissementId" name="etablissementId" required>
+            <option [ngValue]="null">-- Choisir --</option>
+            <option *ngFor="let e of etablissements" [ngValue]="e.id">
+              {{ e.nom }} ({{ e.pays }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="reset()" [disabled]="loading">
+          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Réinitialiser
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || !offreForm.valid">
+          <ng-container *ngIf="!loading; else loadingTpl">
+            <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+            Créer
+          </ng-container>
+          <ng-template #loadingTpl>
+            <div class="loading-spinner"></div>
+            Création...
+          </ng-template>
+        </button>
+      </div>
+
+      <div *ngIf="message" class="success-message">
+        <svg class="success-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 12l2 2 4-4"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        {{ message }}
+      </div>
+    </form>
+  </div>
+</div>

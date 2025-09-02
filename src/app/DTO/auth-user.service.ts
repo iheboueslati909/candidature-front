@@ -27,12 +27,17 @@ export class AuthUserService {
     this.loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   }
 
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('Token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+ private getAuthHeaders(): HttpHeaders {
+  let token: string | null = null;
+
+  if (isPlatformBrowser(this.platformId)) {
+    token = localStorage.getItem('Token');
   }
+
+  return new HttpHeaders({
+    'Authorization': token ? `Bearer ${token}` : ''
+  });
+}
 
   login(loginData: LoginRequestDTO): Observable<LoginResponseDTO> {
     return this.http.post<LoginResponseDTO>(`${BASE_URL}/login`, loginData).pipe(
