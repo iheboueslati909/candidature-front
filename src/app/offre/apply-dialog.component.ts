@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -64,6 +64,7 @@ export class ApplyDialogComponent {
   candidatureSvc = inject(CandidatureService);
   auth = inject(AuthUserService);
   profileSvc = inject(ProfileEtudiantService);
+
 
   loading = false;
   success: string | null = null;

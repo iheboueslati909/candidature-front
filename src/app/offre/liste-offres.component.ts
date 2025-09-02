@@ -81,7 +81,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
                 </td>
 
                 <!-- Email action (non-candidat only) -->
-                <td *ngIf="!isCandidat()" class="data-cell text-center">
+                <td *ngIf="isSuperAdmin()" class="data-cell text-center">
                   <button class="action-button tooltip-container" (click)="openSendEmail(o.id)">
                     <i class="ri-mail-send-line action-icon"></i>
                     <span class="tooltip-text">Envoyer</span>
@@ -136,7 +136,9 @@ export class ListeOffresComponent {
   isCandidat(): boolean {
     return this.roles.includes('STUDENT');
   }
-
+    isSuperAdmin(): boolean {
+    return this.roles.includes('SUPER_ADMIN');
+  }
   async load() {
     const data = await this.svc.list();
     this.offres.set(data);

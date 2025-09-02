@@ -1,14 +1,32 @@
 <div class="app-wrapper" *ngIf="showSidenav; else fullContent">
   <aside class="sidebar">
-    <div class="sidebar-header">
-    </div>
+    <div class="sidebar-header"></div>
     <nav class="sidebar-nav">
       <ng-container *ngFor="let item of menuItems">
-        <a class="nav-item" [routerLink]="item.route" routerLinkActive="active" *ngIf="canView(item)">
+        <!-- Normal items -->
+        <a class="nav-item"
+           *ngIf="canView(item) && item.route !== '/notification/list'"
+           [routerLink]="item.route"
+           routerLinkActive="active">
           <div class="icon-wrapper">
             <mat-icon>{{ item.icon }}</mat-icon>
           </div>
           <span class="label">{{ item.label }}</span>
+        </a>
+
+        <!-- Notifications (opens dialog instead of routing) -->
+        <a class="nav-item"
+           *ngIf="canView(item) && item.route === '/notification/list'"
+           (click)="openNotifications()">
+          <div class="icon-wrapper">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
+          <span class="label">{{ item.label }}</span>
+          <mat-icon *ngIf="hasNotifications"
+                    color="warn"
+                    class="notification-dot">
+            fiber_manual_record
+          </mat-icon>
         </a>
       </ng-container>
     </nav>
@@ -26,11 +44,16 @@
       </div>
     </header>
 
-    <div >
+    <div>
       <router-outlet></router-outlet>
     </div>
   </main>
 </div>
+
+<!-- reference NotificationListComponent so standalone import is recognized by the compiler -->
+<ng-container *ngIf="false">
+  <app-notification-list></app-notification-list>
+</ng-container>
 
 <ng-template #fullContent>
   <router-outlet></router-outlet>
