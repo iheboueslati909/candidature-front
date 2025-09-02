@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthUserService } from '../DTO/auth-user.service';
@@ -50,13 +50,17 @@ export class HomeComponent {
     { label: 'Candidatures', icon: 'assignment', route: '/candidature/list', roles: ['SUPER_ADMIN'] },
     { label: 'Créer offre', icon: 'add', route: '/offres/new', roles: ['SUPER_ADMIN'] },
     { label: 'Créer établissement', icon: 'apartment', route: '/etablissements/new', roles: ['SUPER_ADMIN'] },
+    { label: 'Utilisateurs', icon: 'people', route: '/user/list', roles: ['SUPER_ADMIN'] },
   ];
 
   constructor(
     private router: Router,
     private authUserService: AuthUserService,
     private notificationService: NotificationService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ngZone: NgZone,
+    private cdRef: ChangeDetectorRef
+
   ) {
     // Show/Hide sidenav based on route
     this.router.events
@@ -73,7 +77,9 @@ export class HomeComponent {
 
       // Update badge/dot when new notifications arrive
       this.notificationService.notifications$.subscribe(notifs => {
-        this.hasNotifications = notifs.length > 0;
+          this.hasNotifications = notifs.length > 0;
+            this.cdRef.markForCheck(); // 🔥 tell Angular to update UI
+
       });
     }
   }
@@ -83,6 +89,7 @@ export class HomeComponent {
     ref.afterClosed().subscribe(() => {
       // clear the notification indicator when the dialog is closed
       this.hasNotifications = false;
+      
     });
   }
 

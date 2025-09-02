@@ -4,15 +4,17 @@
     <nav class="sidebar-nav">
       <ng-container *ngFor="let item of menuItems">
         <!-- Normal items -->
-        <a class="nav-item"
-           *ngIf="canView(item) && item.route !== '/notification/list'"
-           [routerLink]="item.route"
-           routerLinkActive="active">
-          <div class="icon-wrapper">
-            <mat-icon>{{ item.icon }}</mat-icon>
-          </div>
-          <span class="label">{{ item.label }}</span>
-        </a>
+       <a class="nav-item"
+   *ngIf="canView(item) && item.route !== '/notification/list'"
+   [routerLink]="item.route"
+   routerLinkActive="active"
+   [routerLinkActiveOptions]="{ exact: true }">
+  <div class="icon-wrapper">
+    <mat-icon>{{ item.icon }}</mat-icon>
+  </div>
+  <span class="label">{{ item.label }}</span>
+</a>
+        
 
         <!-- Notifications (opens dialog instead of routing) -->
         <a class="nav-item"
