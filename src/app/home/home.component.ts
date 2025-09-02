@@ -111,4 +111,9 @@ export class HomeComponent {
   isSuperAdmin(): boolean {
     return this.roles.includes('SUPER_ADMIN');
   }
+
+  logout(): void {
+    this.authUserService.logout();
+    window.location.reload();
+  }
 }

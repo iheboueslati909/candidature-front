@@ -4,29 +4,22 @@
     <nav class="sidebar-nav">
       <ng-container *ngFor="let item of menuItems">
         <!-- Normal items -->
-       <a class="nav-item"
-   *ngIf="canView(item) && item.route !== '/notification/list'"
-   [routerLink]="item.route"
-   routerLinkActive="active"
-   [routerLinkActiveOptions]="{ exact: true }">
-  <div class="icon-wrapper">
-    <mat-icon>{{ item.icon }}</mat-icon>
-  </div>
-  <span class="label">{{ item.label }}</span>
-</a>
-        
-
-        <!-- Notifications (opens dialog instead of routing) -->
-        <a class="nav-item"
-           *ngIf="canView(item) && item.route === '/notification/list'"
-           (click)="openNotifications()">
+        <a class="nav-item" *ngIf="canView(item) && item.route !== '/notification/list'" [routerLink]="item.route"
+          routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <div class="icon-wrapper">
             <mat-icon>{{ item.icon }}</mat-icon>
           </div>
           <span class="label">{{ item.label }}</span>
-          <mat-icon *ngIf="hasNotifications"
-                    color="warn"
-                    class="notification-dot">
+        </a>
+
+
+        <!-- Notifications (opens dialog instead of routing) -->
+        <a class="nav-item" *ngIf="canView(item) && item.route === '/notification/list'" (click)="openNotifications()">
+          <div class="icon-wrapper">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
+          <span class="label">{{ item.label }}</span>
+          <mat-icon *ngIf="hasNotifications" color="warn" class="notification-dot">
             fiber_manual_record
           </mat-icon>
         </a>
@@ -40,7 +33,7 @@
         <span class="page-title">Plateforme de mobilité</span>
       </div>
       <div class="header-right">
-        <button class="icon-button" aria-label="Account">
+        <button (click)="logout()" class="icon-button" aria-label="Account" mat-icon-button>
           <mat-icon>account_circle</mat-icon>
         </button>
       </div>

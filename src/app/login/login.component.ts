@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.roles = response.roles;
-        this.router.navigate(['/']);
+        this.router.navigate(['/offres']);
       },
       error: (error) => {
         this.isLoginFailed = true;

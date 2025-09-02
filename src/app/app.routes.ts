@@ -15,29 +15,32 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { AuthGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
-  {
+  // redirect the empty path to login
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+   {
     path: '',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: 'candidature/list', component: CandidatureListComponent },
       { path: 'candidature/new', component: CandidatureFormComponent },
       { path: 'candidature/history', component: CandidatureHistoryComponent },
       { path: 'mail/send', component: MailSendComponent },
       { path: 'user/list', component: UserListComponent },
-      { path: 'user/details/:id', component: UserDetailsComponent },  
-      // { path: 'notification/list', component: NotificationListComponent },
+      { path: 'user/details/:id', component: UserDetailsComponent },
       { path: 'rating/form', component: RatingFormComponent },
       { path: 'favorite/list', component: FavoriteListComponent },
-  { path: 'etablissements', component: ListeEtablissementsComponent },
- 
-  { path: 'offres/new', component: CreateOffreComponent },
-  { path: 'etablissements/new', component: CreateEtablissementComponent },
-  { path: 'offres', component: ListeOffresComponent },
-      { path: '', redirectTo: 'candidature/list', pathMatch: 'full' }
+      { path: 'etablissements', component: ListeEtablissementsComponent },
+      { path: 'offres/new', component: CreateOffreComponent },
+      { path: 'etablissements/new', component: CreateEtablissementComponent },
+      { path: 'offres', component: ListeOffresComponent },
     ]
   },
-  { path: 'login', component: LoginComponent }, // standalone
-  { path: 'register', component: RegisterComponent }, // standalone
+
+  { path: 'login', component: LoginComponent }, 
+  { path: 'register', component: RegisterComponent },
 ];

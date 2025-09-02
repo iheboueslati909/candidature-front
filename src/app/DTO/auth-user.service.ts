@@ -54,7 +54,9 @@ export class AuthUserService {
   }
 
   logout(): void {
+    console.log("AAAAAAAAAAA LOGOUT")
     if (isPlatformBrowser(this.platformId)) {
+      console.log("AAAAAAAAAAA IN BROWSER")
       localStorage.removeItem('Token');
       localStorage.removeItem('User');
       this.loggedIn.next(false);
@@ -220,8 +222,6 @@ export class AuthUserService {
       headers: this.getAuthHeaders(),
     });
   }
-
-  
 
   
 }

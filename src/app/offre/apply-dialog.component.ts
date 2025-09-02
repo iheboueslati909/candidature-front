@@ -71,7 +71,7 @@ export class ApplyDialogComponent {
 
 form = new FormGroup({
   studentName: new FormControl({ value: '', disabled: true }),
-  moyenne: new FormControl({ value: 10, disabled: true }),
+  moyenne: new FormControl( 10 ),
   dateDebut: new FormControl({ value: '', disabled: true })
 });
 
@@ -82,7 +82,6 @@ form = new FormGroup({
     }
     const userId = this.auth.getUserId();
     if (userId) {
-      this.profileSvc.getByUserId(userId).then(p => { if (p?.moyenne != null) this.form.patchValue({ moyenne: p.moyenne }); });
       this.form.patchValue({ studentName: this.auth.getFullName() ?? '' });
     }
   }
@@ -97,7 +96,7 @@ form = new FormGroup({
 
     this.loading = true;
     try {
-      const { studentName, dateDebut } = this.form.value;
+    const { studentName, dateDebut } = this.form.getRawValue();
       
       if (!studentName || !dateDebut  ) { alert('Veuillez remplir tous les champs.'); this.loading = false; return; }
       

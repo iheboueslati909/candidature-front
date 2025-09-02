@@ -6,7 +6,7 @@ export class NotificationService {
 private _notifications = new BehaviorSubject<any[]>([]);
   notifications$ = this._notifications.asObservable();
 
-  constructor(private zone: NgZone) {}
+  constructor(private zone: NgZone) {} 
 
   connect(userId: string) {
     const eventSource = new EventSource(`http://localhost:8080/api/notifications/stream/${userId}`);
